@@ -691,6 +691,110 @@ html.anim .in .wm-arc.cong { opacity: 0.8; }
 @media (prefers-reduced-motion: reduce) {
   .kling img, .project { transition: none; }
 }
+
+/* ================= Revision 4: atlas brain, views, intro ================= */
+html { scroll-behavior: auto; }
+.view[hidden] { display: none !important; }
+html.anim .view.enter > * { animation: viewin 0.85s cubic-bezier(0.2, 0.7, 0.1, 1) both; }
+@keyframes viewin { from { opacity: 0; transform: scale(1.012); filter: blur(5px); } to { opacity: 1; transform: none; filter: none; } }
+.view:focus { outline: none; }
+main { min-height: 80svh; background: var(--paper); }
+
+/* curtain between views */
+.curtain { position: fixed; inset: 0; z-index: 40; background: var(--night); display: grid; place-items: center; clip-path: inset(100% 0 0 0); pointer-events: none; }
+.curtain::before, .curtain::after { content: ""; position: absolute; left: 0; right: 0; height: 1px; background: var(--brass); opacity: 0.7; }
+.curtain::before { top: 12vh; } .curtain::after { bottom: 12vh; }
+.curtain.in { clip-path: inset(0 0 0 0); transition: clip-path 0.42s cubic-bezier(0.7, 0, 0.2, 1); pointer-events: auto; }
+.curtain.out { clip-path: inset(0 0 100% 0); transition: clip-path 0.46s cubic-bezier(0.7, 0, 0.2, 1) 0.08s; }
+.curtain span { font-family: var(--display); font-size: clamp(2rem, 6vw, 4.4rem); font-weight: 400; color: var(--night-ink); letter-spacing: -0.01em; opacity: 0; transform: translateY(12px); padding-inline: 1rem; text-align: center; }
+.curtain.in span { opacity: 1; transform: none; transition: opacity 0.35s ease 0.12s, transform 0.5s ease 0.12s; }
+
+/* brain host */
+html.anim .hero-brain { animation: none; }
+.hero-inner { pointer-events: none; }
+.hero-copy > * { pointer-events: auto; }
+.hero-brain canvas { opacity: 0; transition: opacity 1.6s ease; touch-action: pan-y; cursor: grab; outline: none; }
+.hero-brain canvas:active { cursor: grabbing; }
+.hero-brain.ready canvas { opacity: 1; }
+.brain-loading { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); display: flex; flex-direction: column; align-items: center; gap: 0.9rem; font-family: var(--ui); font-size: 0.66rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--night-ink-2); pointer-events: none; transition: opacity 0.6s ease; }
+.brain-loading::before { content: ""; width: 3.2rem; height: 3.2rem; border-radius: 50%; border: 1px solid var(--night-rule); border-top-color: var(--brass); animation: spin 1.4s linear infinite; }
+.brain-loading i { display: block; width: 7rem; height: 1px; background: var(--night-rule); position: relative; overflow: hidden; }
+.brain-loading i::after { content: ""; position: absolute; inset: 0; background: var(--brass); transform-origin: left; transform: scaleX(var(--p, 0)); transition: transform 0.2s linear; }
+.hero-brain.ready .brain-loading, .hero-brain.failed .brain-loading { opacity: 0; }
+@keyframes spin { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) { .brain-loading::before { animation: none; } }
+.brain-fallback { position: absolute; right: 6%; top: 50%; transform: translateY(-50%); width: min(58%, 34rem); height: auto; border: 1px solid var(--night-rule); opacity: 0.9; }
+.hero-credit { font-family: var(--ui); font-size: 0.7rem; line-height: 1.5; color: var(--night-ink-2); max-width: 30rem; }
+.hero-credit a { color: var(--brass); }
+html.anim .hero:not(.go) *, html.anim .hero:not(.go) .lb { animation-play-state: paused !important; }
+html.anim .hero-credit { animation: fadeup 1.2s ease 2.8s both; }
+
+.brain-slot { position: relative; border: 1px solid var(--rule); background: radial-gradient(ellipse 60% 60% at 50% 50%, var(--night-glow) 0%, var(--night) 78%); min-height: 16rem; aspect-ratio: 5 / 4; overflow: hidden; }
+.brain-slot .hero-brain { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 0; opacity: 1; transform: none !important; }
+.sys-chips { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+.sys-chips button { font-family: var(--ui); font-size: 0.74rem; color: var(--ink); background: none; border: 1px solid var(--rule); border-radius: 999px; padding: 0.28rem 0.7rem; }
+.sys-chips button:hover { border-color: var(--ink-2); }
+.sys-chips button[aria-pressed="true"] { border-color: var(--brass); background: var(--brass); color: var(--night); }
+.sources { display: flex; flex-direction: column; gap: 0.3rem; font-family: var(--ui); font-size: 0.7rem; line-height: 1.45; color: var(--ink-2); }
+.sources b { color: var(--ink); font-weight: 500; }
+.snap { display: block; width: 100%; height: auto; aspect-ratio: 14 / 9; object-fit: contain; }
+.kling { max-width: 30rem; }
+
+/* home tiles */
+.tiles-sec > .wrap { padding-block: clamp(3.5rem, 9vh, 6rem); display: flex; flex-direction: column; gap: 2rem; }
+.tiles { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.75rem; }
+.tile { position: relative; display: flex; flex-direction: column; justify-content: flex-end; gap: 0.35rem; min-height: 15rem; padding: 1.25rem; overflow: hidden; text-decoration: none; color: var(--night-ink); background: var(--night-2); border: 1px solid var(--night-rule); isolation: isolate; }
+.tile.big { grid-column: span 2; min-height: 19rem; }
+.tile img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: -2; filter: grayscale(0.45) brightness(0.5) contrast(1.05); transition: transform 1.4s cubic-bezier(0.2, 0.7, 0.1, 1), filter 0.8s ease; }
+.tile::before { content: ""; position: absolute; inset: 0; z-index: -1; background: linear-gradient(to top, var(--night) 4%, transparent 75%); opacity: 0.92; }
+.tile::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 2px; background: var(--brass); transform: scaleX(0); transform-origin: left; transition: transform 0.6s cubic-bezier(0.7, 0, 0.2, 1); }
+.tile:hover img, .tile:focus-visible img { transform: scale(1.06); filter: grayscale(0.1) brightness(0.68); }
+.tile:hover::after, .tile:focus-visible::after { transform: scaleX(1); }
+.tile .t-no { position: absolute; top: 1rem; left: 1.25rem; font-family: var(--display); font-style: italic; font-size: 1.3rem; color: var(--brass); }
+.tile .t-title { font-family: var(--display); font-size: clamp(1.5rem, 2.4vw, 2.1rem); line-height: 1.08; text-wrap: balance; }
+.tile .t-sub { font-family: var(--ui); font-size: 0.76rem; line-height: 1.4; color: var(--night-ink-2); max-width: 30rem; }
+
+/* intro */
+.intro { position: fixed; inset: 0; z-index: 60; background: #000; opacity: 1; transition: opacity 0.8s ease; }
+.intro-ui { position: fixed; inset: 0; z-index: 62; pointer-events: none; display: grid; place-items: center; transition: opacity 0.8s ease; }
+.intro.off, .intro-ui.off { opacity: 0; }
+.hero-brain.intro-mode { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 61; transform: none !important; transition: opacity 0.7s ease; }
+.hero-brain.intro-mode .brain-label, .hero-brain.intro-mode .brain-loading { display: none; }
+.intro-sys { position: absolute; left: 50%; bottom: 17vh; transform: translateX(-50%); font-family: var(--ui); font-size: clamp(0.72rem, 1.4vw, 0.9rem); font-weight: 500; letter-spacing: 0.34em; text-transform: uppercase; color: var(--brass); white-space: nowrap; opacity: 0; transition: opacity 0.28s ease; }
+.intro-sys.on { opacity: 1; }
+.intro-fig { position: absolute; inset: 0; display: grid; place-items: center; }
+.intro-fig figure { grid-area: 1 / 1; margin: 0; width: min(70vw, 58rem); height: min(62vh, 40rem); display: grid; place-items: center; opacity: 0; transition: opacity 0.45s ease; }
+.intro-fig figure.on { opacity: 1; }
+.intro-fig img { max-width: 100%; max-height: 100%; width: auto; height: auto; background: var(--plate); padding: 0.5rem; transform: scale(1.02); }
+.intro-fig figure.on img { animation: kenburns 1.6s ease-out both; }
+@keyframes kenburns { from { transform: scale(1.02) translateY(6px); } to { transform: scale(1.1) translateY(-6px); } }
+.intro-title { position: absolute; left: 0; right: 0; top: 50%; transform: translateY(-50%); display: flex; flex-direction: column; align-items: center; gap: 0.6rem; text-align: center; padding-inline: 1rem; opacity: 0; filter: blur(10px); transition: opacity 0.9s ease, filter 1.1s ease, letter-spacing 1.4s ease; color: var(--night-ink); }
+.intro-title.on { opacity: 1; filter: none; }
+.intro-title span { font-family: var(--display); font-style: italic; font-size: clamp(1.3rem, 3vw, 2.2rem); color: var(--night-ink-2); }
+.intro-title strong { font-family: var(--display); font-weight: 400; font-size: clamp(3rem, 9vw, 7rem); line-height: 1; letter-spacing: -0.015em; }
+.intro-title em { font-family: var(--ui); font-style: normal; font-size: clamp(0.62rem, 1.3vw, 0.8rem); letter-spacing: 0.3em; text-transform: uppercase; color: var(--brass); margin-top: 0.6rem; }
+.intro-skip { position: absolute; right: max(16px, env(safe-area-inset-right, 0px)); bottom: max(1.5rem, env(safe-area-inset-bottom, 0px)); pointer-events: auto; font-family: var(--ui); font-size: 0.72rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--night-ink); background: none; border: 1px solid var(--night-ink-2); border-radius: 2px; padding: 0.55rem 1rem; }
+.intro-skip:hover { border-color: var(--brass); color: var(--brass); }
+.intro-bar { position: absolute; left: 0; bottom: 0; height: 2px; width: 100%; background: var(--brass); transform-origin: left; transform: scaleX(0); }
+.intro-lb { position: absolute; left: 0; right: 0; height: 9vh; background: #000; border-bottom: 1px solid var(--night-rule); }
+.intro-lb.b { bottom: 0; border-bottom: 0; border-top: 1px solid var(--night-rule); } .intro-lb.t { top: 0; }
+body.intro-on { overflow: hidden; }
+
+.footer .credit { flex-basis: 100%; font-size: 0.7rem; line-height: 1.5; color: var(--ink-2); max-width: 60rem; }
+.footer .credit a { color: var(--brass); }
+
+@media (max-width: 1000px) {
+  .tiles { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .tile.big { grid-column: span 2; }
+}
+@media (max-width: 720px) {
+  .tiles { grid-template-columns: minmax(0, 1fr); }
+  .tile, .tile.big { grid-column: auto; min-height: 11.5rem; }
+  .hero-credit { font-size: 0.66rem; }
+  .brain-fallback { right: 4%; top: 24%; width: 92%; transform: none; }
+  .intro-sys { letter-spacing: 0.2em; bottom: 20vh; }
+  .intro-fig figure { width: 88vw; height: 54vh; }
+}
 </style>
 
 
@@ -698,17 +802,17 @@ html.anim .in .wm-arc.cong { opacity: 0.8; }
 <body>
 <header class="nav scene">
   <div class="wrap">
-    <a class="nav-name" href="#inicio">H. Virto Farfan</a>
+    <a class="nav-name" href="#/inicio">H. Virto Farfan</a>
     <nav class="nav-links" aria-label="Secciones" data-en-aria-label="Sections">
-      <a href="#destacados" data-en="Featured">Destacados</a>
-      <a href="#global" data-en="Global stage">Escenario global</a>
-      <a href="#mapa" data-en="Map">Mapa</a>
-      <a href="#investigacion" data-en="Research">Líneas</a>
-      <a href="#publicaciones" data-en="Publications">Publicaciones</a>
-      <a href="#proyectos" data-en="Projects">Proyectos</a>
-      <a href="#trayectoria" data-en="Career">Trayectoria</a>
-      <a href="#actividades" data-en="Activities">Actividades</a>
-      <a href="#contacto" data-en="Contact">Contacto</a>
+      <a href="#/inicio" data-en="Home">Inicio</a>
+      <a href="#/trabajos" data-en="Featured">Destacados</a>
+      <a href="#/escenario" data-en="Global stage">Escenario</a>
+      <a href="#/mapa" data-en="Map">Mapa</a>
+      <a href="#/lineas" data-en="Research">Líneas</a>
+      <a href="#/publicaciones" data-en="Publications">Publicaciones</a>
+      <a href="#/proyectos" data-en="Projects">Proyectos</a>
+      <a href="#/trayectoria" data-en="Career">Trayectoria</a>
+      <a href="#/contacto" data-en="Contact">Contacto</a>
     </nav>
     <div class="nav-tools">
       <span class="lang-toggle" role="group" aria-label="Idioma" data-en-aria-label="Language">
@@ -725,9 +829,11 @@ html.anim .in .wm-arc.cong { opacity: 0.8; }
 </header>
 
 <main>
-<section class="hero scene grain" id="inicio">
+<div class="view" data-view="inicio">
+<section class="hero scene grain" id="hero">
   <span class="lb t" aria-hidden="true"></span><span class="lb b" aria-hidden="true"></span>
-  <div class="hero-brain" id="brain" role="img" aria-label="Modelo tridimensional de un cerebro con la corteza prefrontal dorsolateral resaltada" data-en-aria-label="Three-dimensional brain model with the dorsolateral prefrontal cortex highlighted">
+  <div class="hero-brain" id="brain" role="img" aria-label="Atlas tridimensional del sistema de estrés humano, con la corteza prefrontal dorsolateral resaltada" data-en-aria-label="Three-dimensional atlas of the human stress system, with the dorsolateral prefrontal cortex highlighted">
+    <div class="brain-loading" id="brain-loading"><span data-en="Loading 3D atlas">Cargando atlas 3D</span><i></i></div>
     <div class="brain-label" id="brain-label"><span data-en="DLPFC · TMS target">CPFDL · diana de TMS</span></div>
   </div>
   <div class="wrap hero-inner">
@@ -737,12 +843,13 @@ html.anim .in .wm-arc.cong { opacity: 0.8; }
       <p class="hero-tag"><span data-en="Clinical neuroscience · Neuromodulation · Psychiatry">Neurociencia clínica · Neuromodulación · Psiquiatría</span></p>
       <p class="hero-role"><span data-en="Physician and RENACYT Level IV researcher. Director of the Neuroscience Research Center (CENEURO) and Secretary of the Section on Disaster Psychiatry of the World Psychiatric Association.">Médico cirujano e investigador RENACYT nivel IV. Director del Centro de Investigación en Neurociencias (CENEURO) y secretario de la Sección de Psiquiatría de Desastres de la World Psychiatric Association.</span></p>
       <div class="hero-actions">
-        <a class="btn btn-primary" href="#destacados"><span data-en="See featured work">Ver trabajos destacados</span></a>
+        <a class="btn btn-primary" href="#/trabajos"><span data-en="See featured work">Ver trabajos destacados</span></a>
         <a class="btn btn-ghost" href="cv.pdf">
           <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 2v8m0 0L4.5 6.5M8 10l3.5-3.5M2.5 13.5h11" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="square"/></svg>
           <span data-en="Download CV (PDF)">Descargar CV (PDF)</span>
         </a>
       </div>
+      <p class="hero-credit"><span data-en="3D brain: multiscale atlas of the human stress system (Virto-Farfan et al., manuscript submitted). Drag to rotate. <a href=&quot;#atlas-fuentes&quot;>Atlas sources</a>">Cerebro 3D: atlas multiescala del sistema de estrés humano (Virto-Farfan et al., manuscrito enviado). Arrastre para girarlo. <a href="#atlas-fuentes">Fuentes del atlas</a></span></p>
     </div>
   </div>
   <figure class="hero-portrait">
@@ -775,12 +882,26 @@ html.anim .in .wm-arc.cong { opacity: 0.8; }
   </div>
 </section>
 
+<section class="tiles-sec scene grain" id="explorar"><div class="wrap">
+<div class="block-head" data-reveal><p class="kicker"><span data-en="Explore">Explorar</span></p><h3><span data-en="Eight ways into his work">Ocho entradas a su trabajo</span></h3></div>
+<div class="tiles">
+<a class="tile big" href="#atlas" data-reveal style="--d:0.00s"><img loading="lazy" src="img/atlas/01_Figure1_manuscrito.jpg" alt=""><span class="t-no">01</span><span class="t-title"><span data-en="3D atlas of the stress system">Atlas 3D del sistema de estrés</span></span><span class="t-sub"><span data-en="An open multiscale atlas of the human stress system. Manuscript submitted.">Un atlas abierto y multiescala del sistema de estrés humano. Manuscrito enviado.</span></span></a>
+<a class="tile" href="#/trabajos" data-reveal style="--d:0.06s"><img loading="lazy" src="img/hq/pururauka_protocol.jpg" alt=""><span class="t-no">02</span><span class="t-title"><span data-en="Featured work">Trabajos destacados</span></span><span class="t-sub"><span data-en="Seven works, from Pururauka to combat-related PTSD.">Siete trabajos, de Pururauka al TEPT de combate.</span></span></a>
+<a class="tile" href="#/escenario" data-reveal style="--d:0.12s"><img loading="lazy" src="img/hq/pnie_axial_dissection.jpg" alt=""><span class="t-no">03</span><span class="t-title"><span data-en="Global stage">Escenario internacional</span></span><span class="t-sub"><span data-en="WPA, four world congresses and a co-author network.">WPA, cuatro congresos mundiales y una red de coautores.</span></span></a>
+<a class="tile" href="#/mapa" data-reveal style="--d:0.18s"><img loading="lazy" src="img/hq/sd_fig_3.svg" alt=""><span class="t-no">04</span><span class="t-title"><span data-en="Research map">Mapa de la investigación</span></span><span class="t-sub"><span data-en="Lines, articles and congresses as a single network.">Líneas, artículos y congresos como una sola red.</span></span></a>
+<a class="tile" href="#/lineas" data-reveal style="--d:0.24s"><img loading="lazy" src="img/hq/pnie_cortex_medial.jpg" alt=""><span class="t-no">05</span><span class="t-title"><span data-en="Research lines">Líneas de investigación</span></span><span class="t-sub"><span data-en="Five lines and a clinical collaboration.">Cinco líneas y una colaboración clínica.</span></span></a>
+<a class="tile" href="#/publicaciones" data-reveal style="--d:0.30s"><img loading="lazy" src="img/hq/pnie_pathways.jpg" alt=""><span class="t-no">06</span><span class="t-title"><span data-en="Publications">Publicaciones</span></span><span class="t-sub"><span data-en="23 articles, filterable by line and year.">23 artículos, con filtros por línea y año.</span></span></a>
+<a class="tile" href="#/proyectos" data-reveal style="--d:0.36s"><img loading="lazy" src="img/atlas/03_publico_tour_guiado_FKBP5.jpg" alt=""><span class="t-no">07</span><span class="t-title"><span data-en="Projects">Proyectos</span></span><span class="t-sub"><span data-en="Ongoing trials, atlases and manuscripts.">Ensayos, atlas y manuscritos en curso.</span></span></a>
+<a class="tile" href="#/trayectoria" data-reveal style="--d:0.42s"><img loading="lazy" src="img/foto_cv.jpg" alt=""><span class="t-no">08</span><span class="t-title"><span data-en="Education and career">Formación y trayectoria</span></span><span class="t-sub"><span data-en="Education, positions and academic activities.">Formación, cargos y actividades académicas.</span></span></a>
+</div></div></section>
+</div>
+<div class="view" data-view="trabajos">
 <!-- ============ § 1 Trabajos destacados ============ -->
 <section class="chapter scene" id="destacados" data-chapter>
   <div class="wrap"><div class="ch-inner">
     <span class="ch-no" aria-hidden="true">§ 1</span>
     <div class="ch-title">
-      <p class="kicker"><span data-en="Six works">Seis trabajos</span></p>
+      <p class="kicker"><span data-en="Seven works">Siete trabajos</span></p>
       <h2><span data-en="Featured work">Trabajos destacados</span></h2>
       <p><span data-en="From a stimulation protocol developed in Cusco to an international evidence synthesis on combat trauma.">De un protocolo de estimulación desarrollado en Cusco a una síntesis internacional de la evidencia en trauma de combate.</span></p>
     </div>
@@ -824,11 +945,11 @@ html.anim .in .wm-arc.cong { opacity: 0.8; }
         <p class="panel-note"><span data-en="p &amp;lt; 0.001. Three reported time points; the horizontal axis is not to time scale.">p &lt; 0,001. Tres mediciones informadas; el eje horizontal no está a escala temporal.</span></p>
       </div>
       <figure class="plate" data-reveal="wipe">
-        <div class="pimg"><img loading="lazy" src="img/fig/pururauka_protocol.jpg" width="1400" height="956" alt="Protocolo Pururauka: sesiones diarias de iTBS y posición de la bobina sobre la corteza prefrontal" data-en-alt="Pururauka protocol: daily iTBS sessions and coil position over the prefrontal cortex"></div>
+        <div class="pimg"><img loading="lazy" src="img/hq/pururauka_protocol.jpg" width="2105" height="1437" alt="Protocolo Pururauka: sesiones diarias de iTBS y posición de la bobina sobre la corteza prefrontal" data-en-alt="Pururauka protocol: daily iTBS sessions and coil position over the prefrontal cortex"></div>
         <figcaption><span data-en="Pururauka accelerated iTBS protocol and coil position. Figure from the article.">Protocolo Pururauka de iTBS acelerada y posición de la bobina. Figura del artículo.</span></figcaption>
       </figure>
       <figure class="plate" data-reveal="wipe">
-        <div class="pimg"><img loading="lazy" src="img/fig/pururauka_suicidal.jpg" width="1400" height="807" alt="Curva de la ideación suicida a lo largo del seguimiento" data-en-alt="Suicidal ideation scores over follow-up"></div>
+        <div class="pimg"><img loading="lazy" src="img/hq/pururauka_suicidal.jpg" width="1954" height="1127" alt="Curva de la ideación suicida a lo largo del seguimiento" data-en-alt="Suicidal ideation scores over follow-up"></div>
         <figcaption><span data-en="Suicidal ideation scores over follow-up. Figure from the article.">Puntuaciones de ideación suicida a lo largo del seguimiento. Figura del artículo.</span></figcaption>
       </figure>
     </div>
@@ -868,7 +989,8 @@ html.anim .in .wm-arc.cong { opacity: 0.8; }
       </div>
       <div class="panel" data-reveal>
         <p class="panel-title"><span data-en="Dorsolateral prefrontal cortex">Corteza prefrontal dorsolateral</span></p>
-        <svg class="dotbrain" data-dotbrain viewBox="0 0 560 330" role="img" aria-label="Silueta lateral del cerebro con la corteza prefrontal dorsolateral marcada" data-en-aria-label="Lateral brain silhouette with the dorsolateral prefrontal cortex marked"></svg>
+        <img class="snap" data-brain-snap="dlpfc" alt="Vista lateral izquierda del atlas 3D con la corteza prefrontal dorsolateral resaltada" data-en-alt="Left lateral view of the 3D atlas with the dorsolateral prefrontal cortex highlighted" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==">
+        <p class="panel-note"><span data-en="View of the 3D atlas of the stress system (Virto-Farfan et al., manuscript submitted).">Vista del atlas 3D del sistema de estrés (Virto-Farfan et al., manuscrito enviado).</span></p>
       </div>
     </div>
   </div>
@@ -890,13 +1012,13 @@ html.anim .in .wm-arc.cong { opacity: 0.8; }
     </div>
     <div class="case-media">
       <figure class="plate" data-reveal="wipe">
-        <div class="pimg"><img loading="lazy" src="img/fig/pnie_axial_dissection.jpg" width="1400" height="1099" alt="Disección axial del cerebro con estructuras rotuladas" data-en-alt="Axial brain dissection with labeled structures"></div>
+        <div class="pimg"><img loading="lazy" src="img/hq/pnie_axial_dissection.jpg" width="1423" height="1117" alt="Disección axial del cerebro con estructuras rotuladas" data-en-alt="Axial brain dissection with labeled structures"></div>
         <figcaption><span data-en="Labeled axial dissection. Figure from the article.">Disección axial rotulada. Figura del artículo.</span></figcaption>
       </figure>
       <div class="plates-3">
-        <figure class="plate" data-reveal="wipe"><div class="pimg"><img loading="lazy" src="img/fig/pnie_cortex_lateral.jpg" width="855" height="1400" alt="Corteza cerebral, vista lateral, coloreada por región" data-en-alt="Cerebral cortex, lateral view, colored by region"></div><figcaption><span data-en="Cortex, lateral view">Corteza, vista lateral</span></figcaption></figure>
-        <figure class="plate" data-reveal="wipe" style="--d:.15s"><div class="pimg"><img loading="lazy" src="img/fig/pnie_cortex_medial.jpg" width="779" height="1400" alt="Corteza cerebral, vista medial, coloreada por región" data-en-alt="Cerebral cortex, medial view, colored by region"></div><figcaption><span data-en="Cortex, medial view">Corteza, vista medial</span></figcaption></figure>
-        <figure class="plate" data-reveal="wipe" style="--d:.3s"><div class="pimg"><img loading="lazy" src="img/fig/pnie_suicide_model.jpg" width="1121" height="1400" alt="Modelo integrador de las vías hacia la conducta suicida" data-en-alt="Integrative model of pathways to suicidal behavior"></div><figcaption><span data-en="Integrative model">Modelo integrador</span></figcaption></figure>
+        <figure class="plate" data-reveal="wipe"><div class="pimg"><img loading="lazy" src="img/hq/pnie_cortex_lateral.jpg" width="1422" height="2328" alt="Corteza cerebral, vista lateral, coloreada por región" data-en-alt="Cerebral cortex, lateral view, colored by region"></div><figcaption><span data-en="Cortex, lateral view">Corteza, vista lateral</span></figcaption></figure>
+        <figure class="plate" data-reveal="wipe" style="--d:.15s"><div class="pimg"><img loading="lazy" src="img/hq/pnie_cortex_medial.jpg" width="1422" height="2557" alt="Corteza cerebral, vista medial, coloreada por región" data-en-alt="Cerebral cortex, medial view, colored by region"></div><figcaption><span data-en="Cortex, medial view">Corteza, vista medial</span></figcaption></figure>
+        <figure class="plate" data-reveal="wipe" style="--d:.3s"><div class="pimg"><img loading="lazy" src="img/hq/pnie_suicide_model.jpg" width="2081" height="2600" alt="Modelo integrador de las vías hacia la conducta suicida" data-en-alt="Integrative model of pathways to suicidal behavior"></div><figcaption><span data-en="Integrative model">Modelo integrador</span></figcaption></figure>
       </div>
     </div>
   </div>
@@ -1006,13 +1128,45 @@ html.anim .in .wm-arc.cong { opacity: 0.8; }
         </div>
       </div>
       <div class="plates-2">
-        <figure class="plate" data-reveal="wipe"><div class="pimg"><img loading="lazy" src="img/fig/sd_fig_3.png" width="426" height="344" alt="Circuito sagital del estrés y sus transmisores" data-en-alt="Sagittal stress circuit and its transmitters"></div><figcaption><span data-en="Sagittal stress circuit. Figure from the manuscript.">Circuito sagital del estrés. Figura del manuscrito.</span></figcaption></figure>
-        <figure class="plate" data-reveal="wipe" style="--d:.15s"><div class="pimg"><img loading="lazy" src="img/fig/sd_fig_S2.png" width="426" height="355" alt="Vías cerebrales en esquema sagital, figura suplementaria" data-en-alt="Brain pathways in a sagittal schematic, supplementary figure"></div><figcaption><span data-en="Pathways in a sagittal schematic. Supplementary figure.">Vías en esquema sagital. Figura suplementaria.</span></figcaption></figure>
+        <figure class="plate" data-reveal="wipe"><div class="pimg"><img loading="lazy" src="img/hq/sd_fig_3.svg" width="511" height="412" alt="Circuito sagital del estrés y sus transmisores" data-en-alt="Sagittal stress circuit and its transmitters"></div><figcaption><span data-en="Sagittal stress circuit. Figure from the manuscript.">Circuito sagital del estrés. Figura del manuscrito.</span></figcaption></figure>
+        <figure class="plate" data-reveal="wipe" style="--d:.15s"><div class="pimg"><img loading="lazy" src="img/hq/sd_fig_S2.svg" width="511" height="426" alt="Vías cerebrales en esquema sagital, figura suplementaria" data-en-alt="Brain pathways in a sagittal schematic, supplementary figure"></div><figcaption><span data-en="Pathways in a sagittal schematic. Supplementary figure.">Vías en esquema sagital. Figura suplementaria.</span></figcaption></figure>
       </div>
     </div>
   </div>
 </article>
 
+<!-- G · Atlas -->
+<article class="case scene grain" id="atlas">
+  <span class="case-no" aria-hidden="true" data-parallax="0.12">07</span>
+  <div class="wrap">
+    <div class="case-text">
+      <p class="case-meta" data-reveal><span>CENEURO</span><span class="jbadge"><span data-en="Manuscript submitted">Manuscrito enviado</span></span></p>
+      <h3 data-reveal style="--d:.08s"><span data-en="A multiscale 3D atlas of the human stress system">Atlas 3D multiescala del sistema de estrés humano</span></h3>
+      <p class="case-sub" data-reveal style="--d:.16s" lang="en">An open multiscale three-dimensional atlas of the human stress system</p>
+      <p data-reveal style="--d:.24s"><span data-en="An open three-dimensional atlas that brings the structures of the stress system into a single space: prefrontal cortex, limbic system, hypothalamus and HPA axis, reward circuit, thalamus, brainstem and cerebellum. The brain shown on this page is a redistributable subset of that atlas, built only from published open-licence atlases.">Un atlas tridimensional y abierto que reúne en un mismo espacio las estructuras del sistema de estrés: corteza prefrontal, sistema límbico, hipotálamo y eje HPA, circuito de recompensa, tálamo, tronco encefálico y cerebelo. El cerebro que se ve en esta página es un subconjunto redistribuible de ese atlas, construido solo con atlas publicados de licencia abierta.</span></p>
+      <dl class="stats" data-reveal style="--d:.3s">
+        <div><dd>180</dd><dt><span data-en="meshes in the subset on this page">mallas en el subconjunto de esta página</span></dt></div>
+        <div><dd>7</dd><dt><span data-en="anatomical systems">sistemas anatómicos</span></dt></div>
+        <div><dd>7</dd><dt><span data-en="source atlases">atlas de origen</span></dt></div>
+      </dl>
+      <div data-reveal id="atlas-fuentes" style="scroll-margin-top:5rem">
+        <p class="panel-title" style="margin-bottom:.6rem"><span data-en="Atlas sources">Fuentes del atlas</span></p>
+        <ul class="sources"><li><b><span data-en="CIT168 subcortical v1.1">CIT168 subcortical v1.1</span></b> · <span data-en="CC BY 4.0">CC BY 4.0</span> · <span data-en="Pauli W.M. et al. (2018) Sci Data 5:180063. OSF jkzwp">Pauli W.M. et al. (2018) Sci Data 5:180063. OSF jkzwp</span></li><li><b><span data-en="CIT168 amygdala v1.0.3">CIT168 amígdala v1.0.3</span></b> · <span data-en="CC BY 4.0">CC BY 4.0</span> · <span data-en="Tyszka J.M. &amp; Pauli W.M. (2016) Hum Brain Mapp 37:3979. OSF hksa6">Tyszka J.M. & Pauli W.M. (2016) Hum Brain Mapp 37:3979. OSF hksa6</span></li><li><b><span data-en="Neudorfer 2020 (hypothalamus)">Neudorfer 2020 (hipotálamo)</span></b> · <span data-en="CC BY 4.0">CC BY 4.0</span> · <span data-en="Neudorfer C. et al. (2020) Sci Data 7:305. Zenodo 3942115">Neudorfer C. et al. (2020) Sci Data 7:305. Zenodo 3942115</span></li><li><b><span data-en="Harvard AAN v2.0">Harvard AAN v2.0</span></b> · <span data-en="CC0">CC0</span> · <span data-en="Edlow B.L. et al. (2012) J Neuropathol Exp Neurol 71:531. Zenodo 8161638">Edlow B.L. et al. (2012) J Neuropathol Exp Neurol 71:531. Zenodo 8161638</span></li><li><b><span data-en="Diedrichsen 2009 (cerebellum)">Diedrichsen 2009 (cerebelo)</span></b> · <span data-en="CC BY">CC BY</span> · <span data-en="Diedrichsen J. et al. (2009) NeuroImage 46:39; (2011) NeuroImage 54:1786">Diedrichsen J. et al. (2009) NeuroImage 46:39; (2011) NeuroImage 54:1786</span></li><li><b><span data-en="Julich-Brain v3.1">Julich-Brain v3.1</span></b> · <span data-en="CC BY 4.0">CC BY 4.0</span> · <span data-en="Amunts K. et al. (2020) Science 369:988; EBRAINS, siibra">Amunts K. et al. (2020) Science 369:988; EBRAINS, siibra</span></li><li><b><span data-en="HCP-MMP1.0 (volumetric)">HCP-MMP1.0 (volumétrico)</span></b> · <span data-en="CC BY 4.0 + HCP terms">CC BY 4.0 + términos HCP</span> · <span data-en="Glasser M.F. et al. (2016) Nature 536:171; MNI version by Horn A. (figshare 3501911)">Glasser M.F. et al. (2016) Nature 536:171; versión MNI de Horn A. (figshare 3501911)</span></li><li><b><span data-en="ICBM 2009a sym">ICBM 2009a sym</span></b> · <span data-en="Free with copyright notice (MNI)">Libre con aviso de copyright (MNI)</span> · <span data-en="Fonov V. et al. (2011) NeuroImage 54:313">Fonov V. et al. (2011) NeuroImage 54:313</span></li></ul>
+      </div>
+    </div>
+    <div class="case-media">
+      <div class="brain-slot" id="atlas-slot" data-brain-slot data-reveal="fade"></div>
+      <div class="sys-chips" id="sys-chips" role="group" aria-label="Sistemas del atlas" data-en-aria-label="Atlas systems"></div>
+      <p class="panel-note"><span data-en="Drag to rotate. Choose a system to highlight it.">Arrastre para girar. Elija un sistema para resaltarlo.</span></p>
+      <figure class="plate" data-reveal="wipe">
+        <div class="pimg"><img loading="lazy" src="img/atlas/01_Figure1_manuscrito.jpg" width="2130" height="1920" alt="Figura 1 del manuscrito: sistemas del atlas en 3D y mapa cortical de densidad del receptor 5-HT1A" data-en-alt="Figure 1 of the manuscript: atlas systems in 3D and cortical map of 5-HT1A receptor density"></div>
+        <figcaption><span data-en="Figure 1 of the manuscript.">Figura 1 del manuscrito.</span></figcaption>
+      </figure>
+    </div>
+  </div>
+</article>
+</div>
+<div class="view" data-view="escenario">
 <!-- ============ § 2 Escenario internacional ============ -->
 <section class="chapter scene" id="global" data-chapter>
   <div class="wrap"><div class="ch-inner">
@@ -1098,6 +1252,8 @@ html.anim .in .wm-arc.cong { opacity: 0.8; }
   </div>
 </section>
 
+</div>
+<div class="view" data-view="mapa">
 <!-- ============ § 3 Mapa de la investigación ============ -->
 <section class="chapter scene" id="mapa" data-chapter>
   <div class="wrap"><div class="ch-inner">
@@ -1120,6 +1276,8 @@ html.anim .in .wm-arc.cong { opacity: 0.8; }
   </div>
 </section>
 
+</div>
+<div class="view" data-view="lineas">
 <!-- ============ 1. Líneas ============ -->
 <section class="section" id="investigacion">
   <div class="wrap">
@@ -1218,6 +1376,8 @@ html.anim .in .wm-arc.cong { opacity: 0.8; }
   </div>
 </section>
 
+</div>
+<div class="view" data-view="publicaciones">
 <!-- ============ 2. Publicaciones ============ -->
 <section class="section" id="publicaciones">
   <div class="wrap">
@@ -1343,6 +1503,8 @@ html.anim .in .wm-arc.cong { opacity: 0.8; }
   </div>
 </section>
 
+</div>
+<div class="view" data-view="proyectos">
 <!-- ============ 3. Proyectos ============ -->
 <section class="section" id="proyectos">
   <div class="wrap">
@@ -1408,6 +1570,8 @@ html.anim .in .wm-arc.cong { opacity: 0.8; }
   </div>
 </section>
 
+</div>
+<div class="view" data-view="trayectoria">
 <!-- ============ 4. Trayectoria ============ -->
 <section class="section" id="trayectoria">
   <div class="wrap">
@@ -1537,6 +1701,8 @@ html.anim .in .wm-arc.cong { opacity: 0.8; }
   </div>
 </section>
 
+</div>
+<div class="view" data-view="contacto">
 <!-- ============ 6. Contacto ============ -->
 <section class="section" id="contacto">
   <div class="wrap">
@@ -1569,15 +1735,30 @@ html.anim .in .wm-arc.cong { opacity: 0.8; }
     </div>
   </div>
 </section>
+</div>
 </main>
 
 <footer class="footer scene">
   <div class="wrap">
     <span><span data-en="Last updated: November 2026">Última actualización: noviembre de 2026</span></span>
     <span>Dr. Carlos Hesed Virto Farfan · Cusco, <span data-en="Peru">Perú</span></span>
+  <p class="credit"><span data-en="3D brain: subset of the multiscale atlas of the human stress system (Virto-Farfan et al., manuscript submitted). <a href=&quot;#atlas-fuentes&quot;>Atlas sources</a>: CIT168 (CC BY 4.0) · Neudorfer 2020 (CC BY 4.0) · Harvard AAN (CC0) · Diedrichsen 2009 (CC BY) · Julich-Brain v3.1 (CC BY 4.0) · HCP-MMP1.0 (CC BY 4.0) · ICBM 2009a.">Cerebro 3D: subconjunto del atlas multiescala del sistema de estrés humano (Virto-Farfan et al., manuscrito enviado). <a href="#atlas-fuentes">Fuentes del atlas</a>: CIT168 (CC BY 4.0) · Neudorfer 2020 (CC BY 4.0) · Harvard AAN (CC0) · Diedrichsen 2009 (CC BY) · Julich-Brain v3.1 (CC BY 4.0) · HCP-MMP1.0 (CC BY 4.0) · ICBM 2009a.</span></p>
   </div>
 </footer>
-
+<div class="curtain" id="curtain" aria-hidden="true"><span id="curtain-label"></span></div>
+<div class="intro" id="intro" hidden></div>
+<div class="intro-ui" id="intro-ui" hidden>
+  <span class="intro-lb t"></span><span class="intro-lb b"></span>
+  <div class="intro-fig" id="intro-fig" aria-hidden="true">
+    <figure><img data-src="img/hq/pururauka_protocol.jpg" alt=""></figure>
+    <figure><img data-src="img/hq/pnie_axial_dissection.jpg" alt=""></figure>
+    <figure><img data-src="img/atlas/01_Figure1_manuscrito.jpg" alt=""></figure>
+  </div>
+  <p class="intro-sys" id="intro-sys" aria-hidden="true"></p>
+  <div class="intro-title" id="intro-title" aria-hidden="true"><span>Dr. Carlos Hesed</span><strong>Virto Farfan</strong><em><span data-en="Clinical neuroscience · Neuromodulation · Psychiatry">Neurociencia clínica · Neuromodulación · Psiquiatría</span></em></div>
+  <button type="button" class="intro-skip" id="intro-skip"><span data-en="Skip intro">Saltar intro</span></button>
+  <div class="intro-bar" id="intro-bar"></div>
+</div>
 <script src="https://cdn.jsdelivr.net/npm/three@0.149.0/build/three.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script>
 <script>
@@ -1668,7 +1849,8 @@ html.anim .in .wm-arc.cong { opacity: 0.8; }
       state.line = tg.getAttribute('data-line') || tg.getAttribute('data-filter-line');
       state.year = 'all'; state.q = ''; searchEl.value = '';
       apply();
-      document.getElementById('publicaciones').scrollIntoView({ block: 'start' });
+      if (window.__reveal) window.__reveal(document.getElementById('publicaciones'));
+      document.getElementById('pub-filters').scrollIntoView({ block: 'start' });
       return;
     }
     var r = e.target.closest('.pubref, .gopub');
@@ -1677,6 +1859,7 @@ html.anim .in .wm-arc.cong { opacity: 0.8; }
       if (!target) return;
       e.preventDefault();
       if (target.hidden) reset();
+      if (window.__reveal) window.__reveal(target);
       target.scrollIntoView({ block: 'center' });
       target.classList.add('flash');
       setTimeout(function () { target.classList.remove('flash'); }, 2200);
@@ -1747,8 +1930,7 @@ html.anim .in .wm-arc.cong { opacity: 0.8; }
     sections.forEach(function (s, i) { if (s && s.offsetTop <= y) current = i; });
     links.forEach(function (a, i) { if (i === current) a.setAttribute('aria-current', 'true'); else a.removeAttribute('aria-current'); });
   }
-  window.addEventListener('scroll', spy, { passive: true });
-  spy();
+
 })();
 </script>
 <script>
@@ -1812,253 +1994,6 @@ window.__GRAPH = {"n":[["Carlos Hesed Virto Farfan","Carlos Hesed Virto Farfan",
     window.addEventListener('scroll', onScroll, { passive: true });
     window.addEventListener('resize', onScroll);
     frame();
-  })();
-
-  /* ---------- Dot-matrix lateral brain (SVG): case study and WebGL fallback ---------- */
-  function dotBrain(svg, opts) {
-    opts = opts || {};
-    while (svg.firstChild) svg.removeChild(svg.firstChild);
-    function inEll(x, y, cx, cy, rx, ry) { var a = (x - cx) / rx, b = (y - cy) / ry; return a * a + b * b <= 1; }
-    function inside(x, y) {
-      if (inEll(x, y, 270, 140, 200, 115) && (y < 206 || inEll(x, y, 235, 212, 112, 44))) return true;
-      if (inEll(x, y, 235, 212, 112, 44)) return true;
-      if (inEll(x, y, 408, 238, 62, 40)) return true;
-      var t = (y - 215) / 105; if (t >= 0 && t <= 1) { var cx = 332 + 30 * t; if (Math.abs(x - cx) < 14 - 3 * t) return true; }
-      return false;
-    }
-    var hx = 168, hy = 96, step = opts.step || 9, row = 0;
-    for (var y = 18; y < 325; y += step * 0.87, row++) {
-      for (var x = 40 + (row % 2 ? step / 2 : 0); x < 500; x += step) {
-        if (!inside(x, y)) continue;
-        var s = (Math.sin(x * 0.062 + Math.sin(y * 0.05) * 2.2) + Math.sin(y * 0.075 + Math.sin(x * 0.041) * 2)) / 2;
-        var d = Math.hypot(x - hx, y - hy);
-        var c = svgEl('circle', { cx: x.toFixed(1), cy: y.toFixed(1), r: (1.1 + 1.25 * (s + 1) / 2).toFixed(2) }, svg);
-        if (d < 24) c.setAttribute('class', 'hot');
-      }
-    }
-    svgEl('circle', { 'class': 'halo', cx: hx, cy: hy, r: 22 }, svg);
-    svgEl('path', { 'class': 'lead', d: 'M' + (hx - 14) + ' ' + (hy - 16) + 'L92 34H40' }, svg);
-    var t = svgEl('text', { x: 40, y: 27 }, svg);
-    t.textContent = L() === 'en' ? 'DLPFC' : 'CPFDL';
-  }
-  var dotSvgs = Array.prototype.slice.call(document.querySelectorAll('[data-dotbrain]'));
-  dotSvgs.forEach(function (s) { dotBrain(s); });
-
-  /* ---------- 3D brain (three.js point cloud) ---------- */
-  (function () {
-    var host = document.getElementById('brain');
-    var label = document.getElementById('brain-label');
-    if (!host) return;
-    function fallback() {
-      var s = svgEl('svg', { 'class': 'dotbrain', viewBox: '0 0 560 330', 'aria-hidden': 'true', preserveAspectRatio: 'xMidYMid meet' });
-      host.insertBefore(s, host.firstChild);
-      dotBrain(s, { step: 8 });
-      dotSvgs.push(s);
-      if (label) label.hidden = true;
-    }
-    var T = window.THREE, renderer;
-    if (!T) { fallback(); return; }
-    try { renderer = new T.WebGLRenderer({ antialias: true, alpha: true, powerPreference: 'low-power' }); }
-    catch (e) { fallback(); return; }
-    if (!renderer.getContext()) { fallback(); return; }
-
-    var small = isSmall();
-    var scale = small ? 0.5 : 1;
-    var scene = new T.Scene();
-    scene.fog = new T.Fog(0x070b14, 3.5, 5.6);
-    var camera = new T.PerspectiveCamera(32, 1, 0.1, 20);
-    camera.position.set(0, 0.1, 4.4);
-    var group = new T.Group();
-    group.rotation.set(0.14, -0.95, 0);
-    scene.add(group);
-
-    function wave(x, y, z) {
-      return (Math.sin(19 * x + 2.4 * Math.sin(13 * y + 1.3)) + Math.sin(18 * y + 2.2 * Math.sin(11 * z)) + Math.sin(16 * z + 2.3 * Math.sin(14 * x + 0.7))) / 3;
-    }
-    function hemi(dx, dy, dz, s) {
-      var x = dx > 0 ? dx * 0.6 : dx * 0.05;
-      var y = dy > 0 ? dy * 0.5 : dy * 0.34;
-      var z = dz * 0.84;
-      var fz = Math.max(0, dz), bz = Math.max(0, -dz);
-      x *= 1 - 0.2 * fz * fz - 0.26 * bz * bz;
-      y *= 1 - 0.1 * fz * fz * fz;
-      var g = wave(x + s * 3.1, y, z), k = 1 + (dx > 0 ? 0.075 : 0.02) * g;
-      return [s * (0.035 + x * k), y * k + 0.06, z * k, g];
-    }
-    var seed = 7;
-    function rnd() { seed = (seed * 16807) % 2147483647; return seed / 2147483647; }
-    var pos = [], col = [], parts = [];
-    function push(p, r, g, b) { pos.push(p[0], p[1], p[2]); col.push(r, g, b); }
-    function fib(n, fn) {
-      var ga = Math.PI * (3 - Math.sqrt(5));
-      for (var i = 0; i < n; i++) {
-        var yy = 1 - (i + 0.5) * 2 / n, rr = Math.sqrt(1 - yy * yy), th = i * ga;
-        fn(Math.cos(th) * rr, yy, Math.sin(th) * rr);
-      }
-    }
-    [1, -1].forEach(function (s) {
-      var start = pos.length / 3;
-      fib(Math.round(3400 * scale), function (dx, dy, dz) {
-        if (dx < -0.35) return;
-        dx += (rnd() - 0.5) * 0.06; dy += (rnd() - 0.5) * 0.06; dz += (rnd() - 0.5) * 0.06;
-        var n = Math.hypot(dx, dy, dz); dx /= n; dy /= n; dz /= n;
-        var p = hemi(dx, dy, dz, s), b = 0.1 + 0.9 * Math.pow(Math.max(0, Math.min(1, (p[3] + 0.45) / 0.95)), 1.6);
-        push(p, 0.55 * b, 0.72 * b, 0.95 * b);
-      });
-      parts.push([start, pos.length / 3]);
-      start = pos.length / 3;
-      fib(Math.round(380 * scale), function (dx, dy, dz) {   // temporal lobe
-        if (dy > 0.55) return;
-        var g = wave(dx * 0.2 + s, dy * 0.2, dz * 0.4), k = 1 + 0.05 * g, b = 0.25 + 0.7 * (g + 1) / 2;
-        push([s * (0.4 + dx * 0.17 * k), -0.27 + dy * 0.15 * k, 0.16 + dz * 0.42 * k], 0.55 * b, 0.72 * b, 0.95 * b);
-      });
-      parts.push([start, pos.length / 3]);
-      start = pos.length / 3;
-      fib(Math.round(460 * scale), function (dx, dy, dz) {   // cerebellum: fine horizontal folia
-        var b = 0.3 + 0.6 * (0.5 + 0.5 * Math.sin(dy * 34));
-        push([s * (0.2 + dx * 0.26), -0.4 + dy * 0.17, -0.55 + dz * 0.24], 0.82 * b, 0.69 * b, 0.42 * b);
-      });
-      parts.push([start, pos.length / 3]);
-    });
-    (function () {   // brainstem
-      var n = Math.round(230 * scale);
-      for (var i = 0; i < n; i++) {
-        var t = i / n, a = i * 2.399, r = 0.09 - 0.03 * t;
-        push([Math.cos(a) * r, -0.3 - 0.6 * t, -0.3 - 0.12 * t + Math.sin(a) * r], 0.5, 0.56, 0.68);
-      }
-    })();
-
-    var N = pos.length / 3;
-    function glowTex() {
-      var c = document.createElement('canvas'); c.width = c.height = 64;
-      var x = c.getContext('2d'), g = x.createRadialGradient(32, 32, 0, 32, 32, 32);
-      g.addColorStop(0, 'rgba(255,255,255,1)'); g.addColorStop(0.35, 'rgba(255,255,255,0.55)'); g.addColorStop(1, 'rgba(255,255,255,0)');
-      x.fillStyle = g; x.fillRect(0, 0, 64, 64);
-      return new T.CanvasTexture(c);
-    }
-    var tex = glowTex();
-    var geo = new T.BufferGeometry();
-    geo.setAttribute('position', new T.Float32BufferAttribute(pos, 3));
-    geo.setAttribute('color', new T.Float32BufferAttribute(col, 3));
-    group.add(new T.Points(geo, new T.PointsMaterial({ size: small ? 0.045 : 0.032, map: tex, vertexColors: true, transparent: true, depthWrite: false, blending: T.AdditiveBlending, sizeAttenuation: true })));
-
-    /* wireframe: each cortical point linked to its two nearest neighbours */
-    var seg = [], adj = [];
-    for (var i0 = 0; i0 < N; i0++) adj.push([]);
-    [parts[0], parts[3]].forEach(function (pr) {
-      for (var i = pr[0]; i < pr[1]; i++) {
-        var b1 = -1, b2 = -1, d1 = 1e9, d2 = 1e9, ix = pos[i * 3], iy = pos[i * 3 + 1], iz = pos[i * 3 + 2];
-        for (var j = pr[0]; j < pr[1]; j++) {
-          if (j === i) continue;
-          var ax = pos[j * 3] - ix, ay = pos[j * 3 + 1] - iy, az = pos[j * 3 + 2] - iz, d = ax * ax + ay * ay + az * az;
-          if (d < d1) { d2 = d1; b2 = b1; d1 = d; b1 = j; } else if (d < d2) { d2 = d; b2 = j; }
-        }
-        [b1, b2].forEach(function (j) {
-          if (j < 0 || adj[i].indexOf(j) !== -1) return;
-          adj[i].push(j); adj[j].push(i);
-          seg.push(ix, iy, iz, pos[j * 3], pos[j * 3 + 1], pos[j * 3 + 2]);
-        });
-      }
-    });
-    var lgeo = new T.BufferGeometry();
-    lgeo.setAttribute('position', new T.Float32BufferAttribute(seg, 3));
-    group.add(new T.LineSegments(lgeo, new T.LineBasicMaterial({ color: 0x5f86c0, transparent: true, opacity: 0.13, depthWrite: false, blending: T.AdditiveBlending })));
-
-    /* DLPFC target on the left hemisphere */
-    var dn = Math.hypot(0.62, 0.55, 0.56), tp = hemi(0.62 / dn, 0.55 / dn, 0.56 / dn, 1);
-    var target = new T.Vector3(tp[0], tp[1], tp[2]);
-    var near = [], nearest = 0, nd = 1e9;
-    for (var i1 = parts[0][0]; i1 < parts[0][1]; i1++) {
-      var q = new T.Vector3(pos[i1 * 3], pos[i1 * 3 + 1], pos[i1 * 3 + 2]), dd = q.distanceTo(target);
-      if (dd < 0.13) near.push(q.x, q.y, q.z);
-      if (dd < nd) { nd = dd; nearest = i1; }
-    }
-    var hgeo = new T.BufferGeometry();
-    hgeo.setAttribute('position', new T.Float32BufferAttribute(near, 3));
-    var hotMat = new T.PointsMaterial({ size: 0.07, map: tex, color: 0x7fd9ea, transparent: true, depthWrite: false, blending: T.AdditiveBlending, fog: false });
-    group.add(new T.Points(hgeo, hotMat));
-    var coreGeo = new T.BufferGeometry();
-    coreGeo.setAttribute('position', new T.Float32BufferAttribute([target.x * 1.03, target.y * 1.03, target.z * 1.03], 3));
-    var coreMat = new T.PointsMaterial({ size: 0.34, map: tex, color: 0x7fd9ea, transparent: true, opacity: 0.8, depthWrite: false, blending: T.AdditiveBlending, fog: false });
-    group.add(new T.Points(coreGeo, coreMat));
-
-    /* neural pulses travelling along the wireframe */
-    var PN = small ? 10 : 22, pulses = [], ppos = new Float32Array(PN * 3);
-    function newPath(fromTarget) {
-      var cur = fromTarget ? nearest : parts[Math.random() < 0.5 ? 0 : 3][0] + Math.floor(Math.random() * (parts[0][1] - parts[0][0]));
-      var path = [cur], prev = -1;
-      for (var k = 0; k < 26; k++) {
-        var a = adj[cur]; if (!a || !a.length) break;
-        var nx = a[Math.floor(Math.random() * a.length)];
-        if (nx === prev && a.length > 1) nx = a[(a.indexOf(nx) + 1) % a.length];
-        prev = cur; cur = nx; path.push(cur);
-      }
-      return path;
-    }
-    for (var p0 = 0; p0 < PN; p0++) pulses.push({ path: newPath(p0 % 2 === 0), t: Math.random() * 10, v: 5 + Math.random() * 5 });
-    var pgeo = new T.BufferGeometry();
-    pgeo.setAttribute('position', new T.BufferAttribute(ppos, 3));
-    group.add(new T.Points(pgeo, new T.PointsMaterial({ size: 0.075, map: tex, color: 0xbfeef7, transparent: true, depthWrite: false, blending: T.AdditiveBlending, fog: false })));
-    function stepPulses(dt) {
-      for (var i = 0; i < PN; i++) {
-        var p = pulses[i]; p.t += dt * p.v;
-        if (p.t >= p.path.length - 1) { p.path = newPath(i % 2 === 0); p.t = 0; }
-        var k = Math.floor(p.t), f = p.t - k, a = p.path[k] * 3, b = p.path[Math.min(k + 1, p.path.length - 1)] * 3;
-        ppos[i * 3] = pos[a] + (pos[b] - pos[a]) * f;
-        ppos[i * 3 + 1] = pos[a + 1] + (pos[b + 1] - pos[a + 1]) * f;
-        ppos[i * 3 + 2] = pos[a + 2] + (pos[b + 2] - pos[a + 2]) * f;
-      }
-      pgeo.attributes.position.needsUpdate = true;
-    }
-
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
-    renderer.setClearColor(0x000000, 0);
-    renderer.domElement.setAttribute('aria-hidden', 'true');
-    host.insertBefore(renderer.domElement, host.firstChild);
-    host.setAttribute('data-webgl', 'on');
-
-    var W = 0, H = 0;
-    function resize() {
-      var w = host.clientWidth, h = host.clientHeight;
-      if (!w || !h || (w === W && h === H)) return;
-      W = w; H = h;
-      renderer.setSize(w, h, false);
-      camera.aspect = w / h;
-      camera.position.z = w / h < 0.9 ? 4.9 : 4.4;
-      camera.updateProjectionMatrix();
-      draw(0);
-    }
-    var v = new T.Vector3(), c0 = new T.Vector3(), elapsed = 0;
-    function draw(dt) {
-      elapsed += dt;
-      if (dt) { group.rotation.y += dt * 0.11; stepPulses(dt); }
-      var pulse = 0.5 + 0.5 * Math.sin(elapsed * 2.2);
-      coreMat.opacity = 0.45 + 0.45 * pulse; coreMat.size = 0.28 + 0.12 * pulse;
-      renderer.render(scene, camera);
-      if (label) {
-        v.copy(target).applyMatrix4(group.matrixWorld);
-        c0.set(0.12, 0.06, 0).applyMatrix4(group.matrixWorld);
-        var facing = (v.z - c0.z) > 0.12;
-        v.project(camera);
-        var lx = (v.x * 0.5 + 0.5) * W, ly = (-v.y * 0.5 + 0.5) * H;
-        label.style.transform = 'translate(' + (lx + 10).toFixed(1) + 'px,' + (ly - 8).toFixed(1) + 'px)';
-        label.classList.toggle('on', facing && lx + 190 < W);
-      }
-    }
-    var visible = true, last = 0, raf = 0;
-    function loop(now) {
-      raf = 0;
-      if (!visible || document.hidden) return;
-      var dt = last ? Math.min(0.05, (now - last) / 1000) : 0.016; last = now;
-      draw(dt);
-      raf = window.requestAnimationFrame(loop);
-    }
-    function kick() { if (!raf && !reduce && visible && !document.hidden) { last = 0; raf = window.requestAnimationFrame(loop); } }
-    if ('ResizeObserver' in window) new ResizeObserver(resize).observe(host); else window.addEventListener('resize', resize);
-    resize();
-    if ('IntersectionObserver' in window) new IntersectionObserver(function (es) { visible = es[0].isIntersecting; kick(); }).observe(host);
-    document.addEventListener('visibilitychange', kick);
-    if (reduce) { group.rotation.y = -0.75; stepPulses(0.3); draw(0); } else kick();
   })();
 
   /* ---------- World coordinate chart ---------- */
@@ -2131,6 +2066,7 @@ window.__GRAPH = {"n":[["Carlos Hesed Virto Farfan","Carlos Hesed Virto Farfan",
     note.textContent = (en ? G.n.length + ' nodes · ' + G.l.length + ' relationships · ' + G.c.length + ' communities. Hover over or tap a node to see its connections; node size reflects the number of connections.'
       : G.n.length + ' nodos · ' + G.l.length + ' relaciones · ' + G.c.length + ' comunidades. Pase el cursor o toque un nodo para ver sus conexiones; el tamaño indica el número de conexiones.');
     var old = stage.querySelector('svg'); if (old) stage.removeChild(old);
+    if (!stage.clientWidth) return;
     var d3 = window.d3;
     if (!d3) { document.getElementById('g-fallback').hidden = false; return; }
     var small = isSmall(), W = stage.clientWidth || 800, H = small ? 600 : Math.max(560, Math.min(760, W * 0.62));
@@ -2196,6 +2132,7 @@ window.__GRAPH = {"n":[["Carlos Hesed Virto Farfan","Carlos Hesed Virto Farfan",
     };
   }
   buildGraph();
+  document.addEventListener('viewshow', function (e) { var st = document.getElementById('g-stage'); if (e.detail === 'mapa' && st && st.clientWidth && (!graphApi || Math.abs(st.clientWidth - graphApi.width) > 60)) buildGraph(); });
   var rz = 0;
   window.addEventListener('resize', function () {
     window.clearTimeout(rz);
@@ -2206,10 +2143,334 @@ window.__GRAPH = {"n":[["Carlos Hesed Virto Farfan","Carlos Hesed Virto Farfan",
   });
 
   document.addEventListener('langchange', function () {
-    dotSvgs.forEach(function (s) { var t = s.querySelector('text'); if (t) t.textContent = L() === 'en' ? 'DLPFC' : 'CPFDL'; });
     drawMap();
     buildGraph();
   });
+})();
+</script>
+<script>
+(function () {
+  'use strict';
+  var root = document.documentElement;
+  var reduce = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+  function L() { return root.lang === 'en' ? 'en' : 'es'; }
+  function qsa(s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); }
+  var FALLBACK_IMG = 'img/atlas/02_publico_atlas_detallado.jpg';
+
+  /* ================= Atlas brain (three.js, meshes from atlas/brain_subset.json) ================= */
+  var Brain = (function () {
+    var host = document.getElementById('brain');
+    var label = document.getElementById('brain-label');
+    var loading = document.getElementById('brain-loading');
+    var api = { ready: false, failed: false, data: null, focus: function () {}, mount: function () {}, snapshot: function () { return null; }, _cbs: [],
+      onReady: function (cb) { if (api.ready || api.failed) cb(api); else api._cbs.push(cb); } };
+    if (!host) { api.failed = true; return api; }
+    function done() { var c = api._cbs; api._cbs = []; c.forEach(function (f) { try { f(api); } catch (e) {} }); }
+    function fail() {
+      if (api.ready || api.failed) return;
+      api.failed = true;
+      host.classList.add('failed');
+      var cv = host.querySelector('canvas'); if (cv) cv.parentNode.removeChild(cv);
+      var im = document.createElement('img');
+      im.className = 'brain-fallback'; im.src = FALLBACK_IMG; im.alt = '';
+      host.insertBefore(im, host.firstChild);
+      if (label) label.hidden = true;
+      done();
+    }
+    api.mount = function (parent, first) {
+      if (!parent || host.parentNode === parent) return;
+      if (first && parent.firstChild) parent.insertBefore(host, parent.firstChild); else parent.appendChild(host);
+    };
+    var T = window.THREE, renderer;
+    if (!T || !window.fetch || !window.atob) { fail(); return api; }
+    try { renderer = new T.WebGLRenderer({ antialias: true, alpha: true }); } catch (e) { fail(); return api; }
+    if (!renderer || !renderer.getContext()) { fail(); return api; }
+
+    var small = window.innerWidth < 720;
+    var scene = new T.Scene();
+    var camera = new T.PerspectiveCamera(30, 1, 0.1, 30);
+    camera.position.set(0, 0.05, 4.7);
+    scene.add(new T.AmbientLight(0x93a4c4, 0.62));
+    var key = new T.DirectionalLight(0xffffff, 0.95); key.position.set(2.5, 3, 4); scene.add(key);
+    var rim = new T.DirectionalLight(0x6f9cff, 0.55); rim.position.set(-3, -1, -2.5); scene.add(rim);
+    var pivot = new T.Group(); pivot.rotation.set(0.1, Math.PI + 0.45, 0); scene.add(pivot);
+    var inner = new T.Group(); inner.scale.setScalar(1 / 92); inner.position.set(0, -8 / 92, -18 / 92); pivot.add(inner);
+
+    var shellMat = new T.ShaderMaterial({
+      uniforms: { c: { value: new T.Color(0x9fc4ff) }, o: { value: 1 } },
+      vertexShader: 'varying vec3 vN; varying vec3 vV; void main(){ vec4 mv = modelViewMatrix * vec4(position, 1.0); vN = normalize(normalMatrix * normal); vV = normalize(-mv.xyz); gl_Position = projectionMatrix * mv; }',
+      fragmentShader: 'uniform vec3 c; uniform float o; varying vec3 vN; varying vec3 vV; void main(){ float f = 1.0 - abs(dot(normalize(vN), normalize(vV))); float a = (0.03 + 0.62 * pow(f, 2.4)) * o; gl_FragColor = vec4(c, a); }',
+      transparent: true, blending: T.AdditiveBlending, depthWrite: false, side: T.DoubleSide
+    });
+    var structs = [], target = null, targetMesh = null, focused = null;
+    function b64(s) { var bin = window.atob(s), n = bin.length, u = new Uint8Array(n); for (var i = 0; i < n; i++) u[i] = bin.charCodeAt(i); return u.buffer; }
+    function addMesh(m) {
+      var p16 = new Int16Array(b64(m.pos)), arr = new Float32Array(p16.length);
+      for (var i = 0; i < p16.length; i += 3) { arr[i] = p16[i] / 100; arr[i + 1] = p16[i + 2] / 100; arr[i + 2] = -p16[i + 1] / 100; }
+      var idx = m.u32 ? new Uint32Array(b64(m.idx)) : new Uint16Array(b64(m.idx));
+      var geo = new T.BufferGeometry();
+      geo.setAttribute('position', new T.BufferAttribute(arr, 3));
+      geo.setIndex(new T.BufferAttribute(idx, 1));
+      geo.computeVertexNormals();
+      var mesh;
+      if (m.sistema === 'contexto') { mesh = new T.Mesh(geo, shellMat); mesh.renderOrder = 5; }
+      else {
+        var col = new T.Color(m.color || '#8899aa');
+        mesh = new T.Mesh(geo, new T.MeshPhongMaterial({ color: col, emissive: col, emissiveIntensity: 0.2, shininess: 55, specular: 0x33404f }));
+        mesh.userData = { sys: m.sistema, id: m.id, base: col.clone() };
+        structs.push(mesh);
+        if (m.id === 'dlpfc_L') {
+          targetMesh = mesh;
+          mesh.material.color.set(0x7fd9ea); mesh.material.emissive.set(0x7fd9ea);
+          var c = m.centro || [-32, 45, 24];
+          target = new T.Vector3(c[0] * 1.12, c[2] * 1.08, -c[1] * 1.08);
+        }
+      }
+      inner.add(mesh);
+    }
+    function applyFocus() {
+      structs.forEach(function (s) {
+        var on = !focused || s.userData.sys === focused || (focused === 'dlpfc' && /^dlpfc_/.test(s.userData.id));
+        var mt = s.material;
+        if (mt.transparent === on) { mt.transparent = !on; mt.needsUpdate = true; }
+        mt.opacity = on ? 1 : 0.07; mt.depthWrite = on;
+        mt.emissiveIntensity = on ? (focused ? 0.6 : 0.2) : 0.1;
+      });
+    }
+    api.focus = function (sys) { focused = sys || null; applyFocus(); if (reduce) draw(0); };
+
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, small ? 1.5 : 2));
+    renderer.setClearColor(0x000000, 0);
+    var canvas = renderer.domElement;
+    canvas.setAttribute('aria-hidden', 'true');
+    host.insertBefore(canvas, host.firstChild);
+    host.setAttribute('data-webgl', 'on');
+
+    var W = 0, H = 0, v = new T.Vector3(), elapsed = 0;
+    function resize() {
+      var w = host.clientWidth, h = host.clientHeight;
+      if (!w || !h || (w === W && h === H)) return;
+      W = w; H = h;
+      renderer.setSize(w, h, false);
+      camera.aspect = w / h;
+      camera.position.z = w / h < 0.9 ? 6.2 : (w / h < 1.3 ? 5.3 : 5.2);
+      camera.updateProjectionMatrix();
+      draw(0);
+    }
+    var dragging = false, lastDrag = 0, px = 0, py = 0;
+    function draw(dt) {
+      elapsed += dt;
+      if (dt && !dragging && (performance.now() - lastDrag > 2600)) pivot.rotation.y += dt * 0.12;
+      if (targetMesh && (!focused || focused === 'pfc' || focused === 'dlpfc')) targetMesh.material.emissiveIntensity = 0.55 + 0.45 * Math.sin(elapsed * 2.4);
+      renderer.render(scene, camera);
+      if (label && target && !host.classList.contains('intro-mode')) {
+        v.copy(target); inner.localToWorld(v);
+        var facing = v.z > 0.12;
+        v.project(camera);
+        var lx = (v.x * 0.5 + 0.5) * W, ly = (-v.y * 0.5 + 0.5) * H;
+        label.style.transform = 'translate(' + (lx + 8).toFixed(1) + 'px,' + (ly - 8).toFixed(1) + 'px)';
+        label.classList.toggle('on', api.ready && facing && lx + 200 < W && (!focused || focused === 'pfc' || focused === 'dlpfc'));
+      }
+    }
+    var visible = true, last = 0, raf = 0;
+    function loop(now) {
+      raf = 0;
+      if (!visible || document.hidden) return;
+      var dt = last ? Math.min(0.05, (now - last) / 1000) : 0.016; last = now;
+      draw(dt);
+      raf = window.requestAnimationFrame(loop);
+    }
+    function kick() { if (!raf && !reduce && visible && !document.hidden) { last = 0; raf = window.requestAnimationFrame(loop); } }
+    if ('ResizeObserver' in window) new ResizeObserver(resize).observe(host); else window.addEventListener('resize', resize);
+    if ('IntersectionObserver' in window) new IntersectionObserver(function (es) { visible = es[es.length - 1].isIntersecting; kick(); }).observe(host);
+    document.addEventListener('visibilitychange', kick);
+
+    canvas.addEventListener('pointerdown', function (e) { dragging = true; px = e.clientX; py = e.clientY; try { canvas.setPointerCapture(e.pointerId); } catch (er) {} });
+    canvas.addEventListener('pointermove', function (e) {
+      if (!dragging) return;
+      pivot.rotation.y += (e.clientX - px) * 0.007;
+      if (e.pointerType !== 'touch') pivot.rotation.x = Math.max(-0.7, Math.min(0.7, pivot.rotation.x + (e.clientY - py) * 0.005));
+      px = e.clientX; py = e.clientY; lastDrag = performance.now();
+      if (reduce) draw(0);
+    });
+    ['pointerup', 'pointercancel', 'pointerleave'].forEach(function (n) { canvas.addEventListener(n, function () { dragging = false; lastDrag = performance.now(); }); });
+
+    api.snapshot = function (focus) {
+      if (!api.ready) return null;
+      try {
+        var keep = { x: pivot.rotation.x, y: pivot.rotation.y, f: focused, w: W, h: H, a: camera.aspect, z: camera.position.z };
+        renderer.setSize(980, 630, false); camera.aspect = 980 / 630; camera.position.z = 3.3; camera.updateProjectionMatrix();
+        pivot.rotation.x = 0.06; pivot.rotation.y = Math.PI / 2 + 0.3; focused = focus || null; applyFocus();
+        if (targetMesh) targetMesh.material.emissiveIntensity = 1;
+        renderer.render(scene, camera);
+        var url = canvas.toDataURL('image/png');
+        pivot.rotation.x = keep.x; pivot.rotation.y = keep.y; focused = keep.f; applyFocus();
+        W = 0; H = 0; resize();
+        if (!W) { renderer.setSize(keep.w || 300, keep.h || 150, false); camera.aspect = keep.a; camera.position.z = keep.z; camera.updateProjectionMatrix(); W = keep.w; H = keep.h; }
+        return url;
+      } catch (e) { return null; }
+    };
+
+    window.fetch('atlas/brain_subset.json').then(function (r) { if (!r.ok) throw new Error('http ' + r.status); return r.json(); }).then(function (data) {
+      api.data = data;
+      var list = (data.mallas || []).slice().sort(function (a, b) { return (a.sistema === 'contexto' ? 0 : 1) - (b.sistema === 'contexto' ? 0 : 1); });
+      var i = 0, total = list.length;
+      if (!total) throw new Error('empty');
+      function chunk() {
+        var t0 = performance.now();
+        try { while (i < total && performance.now() - t0 < 14) addMesh(list[i++]); } catch (e) { fail(); return; }
+        if (loading) loading.style.setProperty('--p', (i / total).toFixed(3));
+        if (i < total) { window.setTimeout(chunk, 0); return; }
+        api.ready = true; host.classList.add('ready');
+        resize(); draw(0); kick(); done();
+      }
+      chunk();
+    }).catch(function () { fail(); });
+    return api;
+  })();
+  window.__brain = Brain;
+
+  /* snapshots and system chips fed by the atlas */
+  var SYS_ORDER = ['pfc', 'limbico', 'hipotalamo', 'recompensa', 'talamo', 'tronco', 'cerebelo'];
+  function sysName(k) { var d = Brain.data || {}; var m = L() === 'en' ? (d.sistemas_en || {}) : (d.sistemas || {}); return m[k] || k; }
+  var chipActive = null;
+  function buildChips() {
+    var box = document.getElementById('sys-chips'); if (!box || !Brain.ready) return;
+    box.innerHTML = '';
+    SYS_ORDER.forEach(function (k) {
+      var b = document.createElement('button'); b.type = 'button'; b.textContent = sysName(k);
+      b.setAttribute('aria-pressed', String(chipActive === k));
+      b.addEventListener('click', function () { chipActive = chipActive === k ? null : k; Brain.focus(chipActive); buildChips(); });
+      box.appendChild(b);
+    });
+  }
+  Brain.onReady(function () {
+    var snaps = qsa('[data-brain-snap]');
+    if (Brain.failed) { snaps.forEach(function (im) { var p = im.closest('.panel'); if (p) p.hidden = true; }); return; }
+    snaps.forEach(function (im) { var u = Brain.snapshot(im.getAttribute('data-brain-snap')); if (u) im.src = u; else { var p = im.closest('.panel'); if (p) p.hidden = true; } });
+    buildChips();
+  });
+  document.addEventListener('langchange', buildChips);
+
+  /* ================= Views and routing ================= */
+  var views = {}; qsa('.view').forEach(function (v) { views[v.getAttribute('data-view')] = v; });
+  var NAMES = {
+    inicio: ['Inicio', 'Home'], trabajos: ['Trabajos destacados', 'Featured work'], escenario: ['Escenario internacional', 'Global stage'], mapa: ['Mapa de la investigación', 'Research map'],
+    lineas: ['Líneas de investigación', 'Research lines'], publicaciones: ['Publicaciones', 'Publications'], proyectos: ['Proyectos', 'Projects'], trayectoria: ['Formación y trayectoria', 'Education and career'], contacto: ['Contacto', 'Contact']
+  };
+  var curtain = document.getElementById('curtain'), curtainLabel = document.getElementById('curtain-label');
+  var hero = document.querySelector('.hero');
+  var current = null, timer = 0;
+  function parse() {
+    var h = '';
+    try { h = decodeURIComponent(window.location.hash.replace(/^#\/?/, '')); } catch (e) {}
+    if (!h) return { view: 'inicio' };
+    if (views[h]) return { view: h };
+    var el = document.getElementById(h), v = el && el.closest ? el.closest('.view') : null;
+    if (v) return { view: v.getAttribute('data-view'), el: el };
+    return { view: 'inicio' };
+  }
+  function jump(el) {
+    if (el) { var y = el.getBoundingClientRect().top + window.scrollY - 70; window.scrollTo(0, Math.max(0, y)); }
+    else window.scrollTo(0, 0);
+  }
+  function swap(name, el, quiet) {
+    Object.keys(views).forEach(function (k) { views[k].hidden = k !== name; });
+    current = name;
+    qsa('.nav-links a').forEach(function (a) { if (a.getAttribute('href') === '#/' + name) a.setAttribute('aria-current', 'true'); else a.removeAttribute('aria-current'); });
+    var slot = views[name].querySelector('[data-brain-slot]');
+    if (!document.body.classList.contains('intro-on')) { if (slot) Brain.mount(slot); else if (name === 'inicio' && hero) Brain.mount(hero, true); }
+    jump(el);
+    try { document.dispatchEvent(new CustomEvent('viewshow', { detail: name })); } catch (e) {}
+    if (!quiet) {
+      var v = views[name];
+      if (!reduce) { v.classList.add('enter'); window.setTimeout(function () { v.classList.remove('enter'); }, 950); }
+      var hd = v.querySelector('h1, h2') || v;
+      hd.setAttribute('tabindex', '-1');
+      try { hd.focus({ preventScroll: true }); } catch (e) {}
+    }
+  }
+  function show(r, instant) {
+    if (r.view === current) { jump(r.el); return; }
+    window.clearTimeout(timer);
+    if (instant || reduce || !curtain) { swap(r.view, r.el, instant); return; }
+    curtainLabel.textContent = NAMES[r.view][L() === 'en' ? 1 : 0];
+    curtain.className = 'curtain in';
+    timer = window.setTimeout(function () {
+      swap(r.view, r.el);
+      curtain.className = 'curtain out';
+      timer = window.setTimeout(function () { curtain.className = 'curtain'; }, 560);
+    }, 470);
+  }
+  window.addEventListener('hashchange', function () { show(parse()); });
+  /* used by the publication links and filters: make the element's view visible at once */
+  window.__reveal = function (el) {
+    var v = el && el.closest ? el.closest('.view') : null; if (!v) return;
+    var name = v.getAttribute('data-view'); if (name === current) return;
+    swap(name, null, true);
+    try { window.history.pushState(null, '', '#/' + name); } catch (e) {}
+  };
+  var sysChipSlot = document.getElementById('atlas-slot');
+  document.addEventListener('viewshow', function () { if (sysChipSlot && chipActive && current !== 'trabajos') { chipActive = null; Brain.focus(null); buildChips(); } });
+
+  /* ================= Intro ================= */
+  function heroGo() { if (hero) hero.classList.add('go'); }
+  var first = parse();
+  swap(first.view, first.el, true);
+  (function () {
+    var bg = document.getElementById('intro'), ui = document.getElementById('intro-ui');
+    var seen = false;
+    try { seen = window.sessionStorage.getItem('introSeen') === '1'; } catch (e) {}
+    if (!bg || !ui || reduce || seen || first.view !== 'inicio' || !root.classList.contains('anim')) { if (bg) { bg.hidden = true; ui.hidden = true; } heroGo(); return; }
+    try { window.sessionStorage.setItem('introSeen', '1'); } catch (e) {}
+    var host = document.getElementById('brain');
+    var sys = document.getElementById('intro-sys'), title = document.getElementById('intro-title'), bar = document.getElementById('intro-bar');
+    var figs = qsa('#intro-fig figure');
+    var timers = [], ended = false, t = 0;
+    function at(ms, fn) { timers.push(window.setTimeout(function () { if (!ended) fn(); }, ms)); }
+    bg.hidden = false; ui.hidden = false;
+    qsa('#intro-fig img').forEach(function (im) { im.src = im.getAttribute('data-src'); });
+    document.body.classList.add('intro-on');
+    host.classList.add('intro-mode'); host.style.opacity = '0';
+    document.body.appendChild(host);
+    function end(fast) {
+      if (ended) return; ended = true;
+      timers.forEach(window.clearTimeout);
+      Brain.focus(null);
+      bg.classList.add('off'); ui.classList.add('off');
+      host.classList.remove('intro-mode'); host.style.opacity = '';
+      if (current === 'inicio' && hero) hero.insertBefore(host, hero.firstChild);
+      document.body.classList.remove('intro-on');
+      heroGo();
+      window.setTimeout(function () { bg.hidden = true; ui.hidden = true; }, fast ? 500 : 900);
+    }
+    document.getElementById('intro-skip').addEventListener('click', function () { end(true); });
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape') end(true); });
+    window.addEventListener('hashchange', function () { end(true); });
+    function run() {
+      var hasBrain = Brain.ready && !Brain.failed;
+      var total = (hasBrain ? 3300 : 300) + 2000 + 1700;
+      bar.style.transition = 'transform ' + total + 'ms linear'; bar.style.transform = 'scaleX(1)';
+      if (hasBrain) {
+        host.style.opacity = '1';
+        ['pfc', 'limbico', 'hipotalamo', 'tronco', 'cerebelo'].forEach(function (k, i) {
+          at(t + 600 + i * 540, function () { Brain.focus(k); sys.classList.remove('on'); window.setTimeout(function () { sys.textContent = sysName(k); sys.classList.add('on'); }, 90); });
+        });
+        t += 600 + 5 * 540;
+        at(t, function () { Brain.focus(null); sys.classList.remove('on'); host.style.opacity = '0.16'; });
+      } else t += 300;
+      figs.forEach(function (f, i) {
+        at(t + i * 640, function () { figs.forEach(function (o) { o.classList.remove('on'); }); f.classList.add('on'); });
+      });
+      t += figs.length * 640 + 80;
+      at(t, function () { figs.forEach(function (o) { o.classList.remove('on'); }); if (hasBrain) host.style.opacity = '0.5'; title.classList.add('on'); });
+      at(t + 1700, function () { end(false); });
+    }
+    var started = false;
+    function start() { if (started || ended) return; started = true; run(); }
+    Brain.onReady(start);
+    at(3200, start);
+  })();
 })();
 </script>
 
