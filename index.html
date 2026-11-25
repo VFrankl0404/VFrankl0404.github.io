@@ -1281,6 +1281,10 @@ html:not(.anim) .nextup { opacity: 1; transform: none; }
 .cartelera .estreno { min-height: 0; }
 .cartelera .e-thumb { height: 8rem; }
 @media (max-width: 560px) { .estreno .e-hook, .estreno .e-hook.m { font-size: 2.3rem; } .estreno.big .e-hook, .estreno.big .e-hook.m { font-size: 2.6rem; } .estreno .e-go, .estreno.big .e-go { margin-left: 0; flex-basis: 100%; } }
+/* el cerebro de la portada recibe el arrastre */
+.cartel-grid { pointer-events: none; }
+.cartel-grid > * { pointer-events: auto; }
+.cartel .hero-brain canvas { pointer-events: auto; }
 </style>
 </head>
 <body>
@@ -1290,10 +1294,10 @@ html:not(.anim) .nextup { opacity: 1; transform: none; }
     <a class="nav-name" href="#inicio">H. Virto Farfan</a>
     <nav class="nav-links" aria-label="Secciones" data-en-aria-label="Sections">
       <a href="#inicio" data-en="Home">Inicio</a>
+      <a href="#publicaciones" data-en="Publications">Publicaciones</a>
       <a href="#escenario" data-en="Global stage">Escenario</a>
       <a href="#mapa" data-en="Map">Mapa</a>
       <a href="#lineas" data-en="Research">Líneas</a>
-      <a href="#publicaciones" data-en="Publications">Publicaciones</a>
       <a href="#proyectos" data-en="Projects">Proyectos</a>
       <a href="#trayectoria" data-en="Career">Trayectoria</a>
       <a href="#contacto" data-en="Contact">Contacto</a>
@@ -2837,7 +2841,7 @@ window.__GRAPH = {"n":[["Carlos Hesed Virto Farfan","Carlos Hesed Virto Farfan",
     canvas.addEventListener('pointermove', function (e) {
       if (!dragging) return;
       pivot.rotation.y += (e.clientX - px) * 0.007;
-      if (e.pointerType !== 'touch') pivot.rotation.x = Math.max(-0.7, Math.min(0.7, pivot.rotation.x + (e.clientY - py) * 0.005));
+      if (e.pointerType !== 'touch') pivot.rotation.x = Math.max(-1.45, Math.min(1.45, pivot.rotation.x + (e.clientY - py) * 0.006));
       px = e.clientX; py = e.clientY; lastDrag = performance.now();
       if (reduce) draw(0);
     });
